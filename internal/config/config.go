@@ -37,3 +37,38 @@ func Read() (Config, error) {
 	}
 	return myConfig, nil
 }
+
+const configFileName = ".gatorconfig.json"
+
+// Helper function to get Config File Path
+func getConfigFilePath() (string, error) {
+	homeDirectory, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+
+	return filepath.Join(homeDirectory, configFileName), nil
+}
+
+// Write config to JSON file
+func write(cfg Config) error {
+	filePath, err := getConfigFilePath()
+	if err != nil {
+		return err
+	}
+
+	// Make the JSON file readable
+	data, err := json.MarshalIndent(cfg, "", "	")
+	if err != nil {
+		return err
+	}
+
+	return os.WriteFile(filePath, data, 0777)
+
+}
+
+// SetUser method to write config structs to JSON after setting user name field
+func (c *Config) SetUser(userName string) error {
+	c.CurrentUserName = userName
+	return write(*c)
+}
