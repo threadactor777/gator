@@ -4,9 +4,11 @@ import (
 	"fmt"
 
 	"github.com/threadactor777/gator/internal/config"
+	"github.com/threadactor777/gator/internal/database"
 )
 
 type State struct {
+	Db  *database.Queries
 	Cfg *config.Config
 }
 
@@ -23,7 +25,7 @@ type Commands struct {
 func (c *Commands) Run(s *State, cmd Command) error {
 	handler, exists := c.CliCommands[cmd.Name]
 	if !exists {
-		return fmt.Errorf("Unknown command: %s", cmd.Name)
+		return fmt.Errorf("Unknown command: %s\n", cmd.Name)
 	}
 	return handler(s, cmd)
 }
